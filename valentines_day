@@ -5,32 +5,57 @@ from io import BytesIO
 class GUI:
     def __init__(self):
         self.window = tk.Tk()
-        self.window.title("Valentine's Day")
+        self.window.title("Will You Be My Valentine?")
 
-        self.label = tk.Label(self.window, text="Hello, love!")
+        self.label = tk.Label(self.window, text="Hello, love! Will You Be My Valentine?")
         self.label.pack()
 
-        self.button = tk.Button(self.window, text="Click me!", command=self.button_click)
+        # Main button to trigger Yes/No prompt
+        self.button = tk.Button(self.window, text="Click me!", command=self.show_yes_no_buttons)
         self.button.pack()
 
-        self.image_label = tk.Label(self.window)  # Empty label for the image
-        self.image_label.pack()
+        # Yes/No buttons (Initially hidden)
+        self.yes_button = tk.Button(self.window, text="Yes", command=lambda: self.show_image("yes"))
+        self.no_button = tk.Button(self.window, text="No", command=lambda: self.show_image("no"))
 
-        # GIF URL
-        url = "https://gifsec.com/wp-content/uploads/2022/09/i-love-you-gif-1.gif"
-
-        # Download the GIF
-        response = requests.get(url)
-        image_data = BytesIO(response.content)
-
-        # Load image using Tkinter's PhotoImage
-        self.tk_image = tk.PhotoImage(data=image_data.getvalue())
+        # Image label (Initially hidden)
+        self.image_label = tk.Label(self.window)
+        
+        # Text label under image
+        self.text_label = tk.Label(self.window, text="", font=("Arial", 12))
 
         self.window.mainloop()
 
+    def show_yes_no_buttons(self):
+        """Displays Yes and No buttons when the main button is clicked."""
+        self.button.pack_forget()  # Hide the initial button
+        self.yes_button.pack()
+        self.no_button.pack()
 
-    def button_click(self):
-        print("button clicked!")
+    def show_image(self, choice):
+        """Downloads and displays an image along with text below it."""
+        if choice == "yes":
+            url = "https://gifsec.com/wp-content/uploads/2022/09/i-love-you-gif-1.gif"
+            caption = "Yay! I love you!! ❤️"
+        elif choice == "no":
+            url = "https://i.pinimg.com/originals/f0/61/c1/f061c18854fe28120ed76c9e03002937.gif"
+            caption = "Aw.. ok... 💔"
+
+        response = requests.get(url)
+        image_data = BytesIO(response.content)
+
+        self.tk_image = tk.PhotoImage(data=image_data.getvalue())
+
+        # Hide Yes/No buttons and show image
+        self.yes_button.pack_forget()
+        self.no_button.pack_forget()
+
         self.image_label.config(image=self.tk_image)
+        self.image_label.pack()
 
+        # Update and display text under the image
+        self.text_label.config(text=caption)
+        self.text_label.pack()
+
+# Run the GUI
 app = GUI()

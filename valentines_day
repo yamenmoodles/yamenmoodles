@@ -1,0 +1,36 @@
+import tkinter as tk
+import requests
+from io import BytesIO
+
+class GUI:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Valentine's Day")
+
+        self.label = tk.Label(self.window, text="Hello, love!")
+        self.label.pack()
+
+        self.button = tk.Button(self.window, text="Click me!", command=self.button_click)
+        self.button.pack()
+
+        self.image_label = tk.Label(self.window)  # Empty label for the image
+        self.image_label.pack()
+
+        # GIF URL
+        url = "https://gifsec.com/wp-content/uploads/2022/09/i-love-you-gif-1.gif"
+
+        # Download the GIF
+        response = requests.get(url)
+        image_data = BytesIO(response.content)
+
+        # Load image using Tkinter's PhotoImage
+        self.tk_image = tk.PhotoImage(data=image_data.getvalue())
+
+        self.window.mainloop()
+
+
+    def button_click(self):
+        print("button clicked!")
+        self.image_label.config(image=self.tk_image)
+
+app = GUI()
